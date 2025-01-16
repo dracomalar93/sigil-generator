@@ -307,10 +307,6 @@ canvas.addEventListener('touchmove', function(e) {
     const touchX = touch.clientX - canvasRect.left; // X coordinate
     const touchY = touch.clientY - canvasRect.top; // Y coordinate
 
-    // Use the coordinates (touchX, touchY) as needed
-    const hoveredLetter = getHoveredLetter(touchX, touchY);
-    if (coordinatesDisplay) {
-        coordinatesDisplay.textContent = `Touch Coordinates: x=${touchX}, y=${touchY} - Hovered Letter: ${hoveredLetter}`;
     }
 });
 
