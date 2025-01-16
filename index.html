@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sigil Generator</title>
+    
+    <!-- Link to external CSS file (style.css) -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="sigilResult">
+        <h1>Sigil Generator</h1>
+        <textarea id="inputText" placeholder="Enter your sentence here"></textarea>
+        <button id="generateButton" onclick="generateSigil()">Generate Sigil</button>
+        <canvas id="sigilCanvas" width="600" height="600"></canvas>
+        <!-- <p id="coordinatesDisplay">Mouse Coordinates: x=0, y=0</p> -->
+         <!-- above paragraph used for identifying letter mapping coordinates used in index.js -->
+    </div>
+    
+
+    <!-- Link to the custom JavaScript file (index.js) -->
+    <script src="index.js"></script>
+</body>
+</html>

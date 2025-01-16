@@ -1,0 +1,100 @@
+/* Reset margins and ensure full-page scaling */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* Prevent scrolling */
+    font-family: Arial, sans-serif; /* Clean and readable font */
+    background-color: #f4f4f4; /* Light background for contrast */
+    text-align: center; /* Center align text */
+}
+
+/* Main container styling */
+#sigilResult {
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    justify-content: space-between; /* Distribute space between items */
+    align-items: center; /* Center horizontally */
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    padding: 20px;
+    box-sizing: border-box; /* Include padding in total size */
+    border: 10px solid #ccc; /* Add a border for visual structure */
+    border-radius: 10px; /* Slightly rounded edges */
+    background-color: #fff; /* White background for the container */
+}
+
+/* Style the textarea input */
+#inputText {
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 20px;
+    width: calc(80vw); /* Dynamically adjust width based on viewport width */
+    max-width: 600px; /* Cap width on larger screens */
+    min-width: 200px; /* Ensure a minimum width */
+    height: calc(10vh); /* Dynamically adjust height based on viewport height */
+    min-height: 50px; /* Minimum height for 2 lines */
+    max-height: 300px; /* Cap height for narrow screens */
+    box-sizing: border-box; /* Include padding and border in dimensions */
+    border: 1px solid #ccc;
+    border-radius: 5px; /* Slightly rounded corners */
+    background-color: #f9f9f9; /* Light gray background */
+    resize: none; /* Disable manual resizing */
+    transition: height 0.3s ease, width 0.3s ease; /* Smooth transition on resize */
+}
+
+/* For narrower screens (less than 600px wide), prioritize height */
+@media (max-width: 600px) {
+    #inputText {
+        width: calc(90vw); /* Adjust width for smaller screens */
+        height: calc(20vh); /* Increase height for narrow viewports */
+    }
+}
+
+/* For wider screens (more than 1200px wide), cap height */
+@media (min-width: 1200px) {
+    #inputText {
+        width: 70vw; /* Wider input box */
+        height: auto; /* Allow dynamic height adjustments */
+        max-height: 150px; /* Set a maximum height beyond 1200px */
+    }
+}
+
+
+
+
+
+
+
+
+/* Style the button */
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+    width: 100%;
+    max-width: 500px; /* Limit maximum width */
+    border-radius: 5px; /* Slightly rounded corners */
+    transition: background-color 0.3s; /* Smooth hover effect */
+}
+
+button:hover {
+    background-color: #d9534f; /* Darker red on hover */
+}
+
+/* Style the canvas */
+#sigilCanvas {
+    width: 100%; /* Canvas scales to fit container width */
+    max-width: 90vw; /* Prevent canvas from exceeding viewport width */
+    height: auto; /* Maintain aspect ratio */
+    max-height: calc(80vh - 200px); /* Leave room for other elements */
+    border: 1px solid black; /* Optional border for visibility */
+    object-fit: contain; /* Maintain aspect ratio without distortion */
+    margin-top: 20px; /* Add spacing between the canvas and the button */
+    box-sizing: border-box; /* Include border in dimensions */
+}
