@@ -40,6 +40,29 @@ const letterMap = {
     'E': { x: 307, y: 245 },
 };
 
+const letterGroups = [
+    ['K', 'Q'],                // Group 1: Same coordinates (372, 190)
+    ['TZ'],                    // Group 2: (417, 237)
+    ['N'],                     // Group 3: (378, 410)
+    ['Y', 'I', 'J'],           // Group 4: (241, 407)
+    ['CH'],                    // Group 5: (180, 298)
+    ['V', 'O', 'U'],           // Group 6: (248, 182)
+    ['KH'],                    // Group 7: (345, 216)
+    ['G', 'GH'],               // Group 8: (372, 361)
+    ['R', 'RH'],               // Group 9: (221, 281)
+    ['P', 'PH', 'F'],          // Group 10: (268, 219)
+    ['M'],                     // Group 11: (263, 329)
+    ['A'],                     // Group 12: (435, 300)
+    ['S'],                     // Group 13: (419, 366)
+    ['T', 'TH'],               // Group 14: (392, 280)
+    ['Z'],                     // Group 15: (201, 232)
+    ['H'],                     // Group 16: (306, 173)
+    ['D', 'DH'],               // Group 17: (305, 389)
+    ['B'],                     // Group 18: (240, 358)
+    ['E'],                     // Group 19: (307, 245)
+    ['SH'],                    // Group 20: (353, 329)
+    ['L'],                     // Group 21: (307, 430)
+];
 
 let coordinatesDisplay = document.getElementById('coordinatesDisplay'); // Display element for showing hovered letter
 
@@ -75,9 +98,6 @@ window.onload = function() {
     canvas.addEventListener('mousemove', function(e) {
         const mouseX = e.clientX - canvasRect.left; // Calculate mouse X position relative to canvas
         const mouseY = e.clientY - canvasRect.top; // Calculate mouse Y position relative to canvas
-
-        // Get the hovered letter at the mouse position
-        const hoveredLetter = getHoveredLetter(mouseX, mouseY);
         
         // Display the coordinates and the hovered letter on the page
         if (coordinatesDisplay) {
@@ -106,46 +126,84 @@ function generateSigil() {
 
 // Process the input text by removing duplicates and handling combinations
 function processText(text) {
-    const combinations = ['CH', 'PH', 'TH', 'RH', 'SH', 'KH', 'GH', 'DH', 'TZ']; // Include TZ in combinations
-    let uniqueSymbols = [];
-    let input = text.toUpperCase();
+    const combinations = ['CH', 'PH', 'TH', 'RH', 'SH', 'KH', 'GH', 'DH', 'TZ']; // Two-letter combinations
+    let uniqueSymbols = []; // Store final unique symbols
+    let usedGroups = new Set(); // Track groups that have already contributed
 
-    // Loop through the input text to check for combinations and handle duplicates
-    for (let i = 0; i < input.length; i++) {
-        // Check if the next two letters form a combination
-        let pair = input[i] + (input[i + 1] || ''); // Handle edge cases where there's no next letter
+    // Clean the input: remove punctuation and convert to uppercase
+    let cleanedInput = text.toUpperCase().replace(/[^A-Z]/g, '');
 
-        if (combinations.includes(pair)) {
-            // Add the combination if it's not already in the list
-            if (!uniqueSymbols.includes(pair)) {
-                uniqueSymbols.push(pair);
-            }
-            i++; // Skip the next letter since it's part of the combination
-        } else {
-            // Process single letters
-            let letter = input[i];
-
-            // Handle substitutions
-            if (letter === 'C') {
-                letter = 'K'; // Substitute C for K
-            } else if (letter === 'W') {
-                letter = 'U'; // Substitute W for U
-            } else if (letter === 'X') {
-                if (!uniqueSymbols.includes('K')) {
-                    uniqueSymbols.push('K'); // Add K first
+    let i = 0;
+    while (i < cleanedInput.length) {
+        // Check for combinations first
+        if (i < cleanedInput.length - 1) {
+            let pair = cleanedInput[i] + cleanedInput[i + 1];
+            if (combinations.includes(pair)) {
+                let groupIndex = findGroup(pair, letterGroups); // Find group for the pair
+                if (groupIndex !== -1 && !usedGroups.has(groupIndex)) {
+                    uniqueSymbols.push(pair);
+                    usedGroups.add(groupIndex);
                 }
-                letter = 'S'; // Treat X as S next
-            }
-
-            // Add the letter if it hasn't been added yet
-            if (!uniqueSymbols.includes(letter)) {
-                uniqueSymbols.push(letter);
+                i += 2; // Skip the second letter of the pair
+                continue;
             }
         }
+
+        // Handle single letters
+        let letter = cleanedInput[i];
+
+        // Substitutions for certain letters
+        if (letter === 'C') letter = 'K';
+        else if (letter === 'W') letter = 'U';
+        else if (letter === 'X') {
+            if (!uniqueSymbols.includes('K')) {
+                let groupIndex = findGroup('K', letterGroups);
+                if (groupIndex !== -1 && !usedGroups.has(groupIndex)) {
+                    uniqueSymbols.push('K');
+                    usedGroups.add(groupIndex);
+                }
+            }
+            letter = 'S';
+        }
+
+        let groupIndex = findGroup(letter, letterGroups);
+        if (groupIndex !== -1 && !usedGroups.has(groupIndex)) {
+            uniqueSymbols.push(letter);
+            usedGroups.add(groupIndex); // Mark group as used
+        }
+
+        i++;
     }
 
     return uniqueSymbols;
 }
+
+// Helper function to find the group index of a letter or combination
+function findGroup(symbol, groups) {
+    for (let i = 0; i < groups.length; i++) {
+        if (groups[i].includes(symbol)) {
+            return i; // Return the group index
+        }
+    }
+    return -1; // Not found
+}
+
+
+// Helper function to find the group index of a letter or combination
+function findGroup(symbol, groups) {
+    for (let i = 0; i < groups.length; i++) {
+        if (groups[i].includes(symbol)) {
+            return i; // Return the group index
+        }
+    }
+    return -1; // Not found
+}
+
+
+
+
+
+
 
 function scaleCoordinates(coords, imgWidth, imgHeight, canvasWidth, canvasHeight) {
     // Map coordinates to match the actual canvas size
@@ -173,48 +231,70 @@ function scaleCoordinates(coords, imgWidth, imgHeight, canvasWidth, canvasHeight
 // Updated drawSigil function
 function drawSigil(symbols, ctx) {
     let lastX, lastY;
-
-    const canvas = document.getElementById('sigilCanvas');
-    const canvasWidth = canvas.width;
-    const canvasHeight = canvas.height;
-    const imgWidth = img.width; // Original image width
-    const imgHeight = img.height; // Original image height
+    let secondLastX, secondLastY; // For the perpendicular line
 
     symbols.forEach((symbol, index) => {
         const detectedCoords = letterMap[symbol];
 
         if (detectedCoords) {
-            const scaledCoords = scaleCoordinates(detectedCoords, imgWidth, imgHeight, canvasWidth, canvasHeight);
+            const scaledCoords = scaleCoordinates(
+                detectedCoords,
+                img.width,
+                img.height,
+                ctx.canvas.width,
+                ctx.canvas.height
+            );
 
-            if (!isValidCoordinate(scaledCoords, canvasWidth, canvasHeight)) {
-                console.warn(`Skipping invalid coordinate for symbol "${symbol}":`, scaledCoords);
-                return; // Skip this coordinate if it's invalid
-            }
-
-            // Draw black circle at the current point
-            ctx.beginPath();
-            ctx.arc(scaledCoords.x, scaledCoords.y, 5, 0, Math.PI * 2); // Circle radius = 5
-            ctx.fillStyle = 'black';
-            ctx.fill();
-
-            if (index > 0) {
-                // Draw the line connecting the last point to the current point
+            if (index === 0) {
+                // Draw the starting red circle
+                ctx.beginPath();
+                ctx.arc(scaledCoords.x, scaledCoords.y, 6, 0, Math.PI * 2);
+                ctx.fillStyle = 'red';
+                ctx.fill();
+            } else {
+                // Draw the connecting line
                 ctx.beginPath();
                 ctx.moveTo(lastX, lastY);
                 ctx.lineTo(scaledCoords.x, scaledCoords.y);
-                ctx.strokeStyle = 'red'; // Line color = red
-                ctx.lineWidth = 3; // Thicker line
+                ctx.strokeStyle = 'red';
+                ctx.lineWidth = 3;
                 ctx.stroke();
             }
 
+            secondLastX = lastX;
+            secondLastY = lastY;
             lastX = scaledCoords.x;
             lastY = scaledCoords.y;
-        } else {
-            console.warn(`No coordinates found for symbol "${symbol}"`);
         }
     });
-}
 
+    // Draw perpendicular line at the last point
+    if (lastX !== undefined && lastY !== undefined && secondLastX !== undefined && secondLastY !== undefined) {
+        const angle = Math.atan2(lastY - secondLastY, lastX - secondLastX);
+        const perpendicularLength = 10; // Length of the perpendicular line
+
+        // Calculate the endpoints of the perpendicular line
+        const perpendicularX1 = lastX + perpendicularLength * Math.cos(angle + Math.PI / 2);
+        const perpendicularY1 = lastY + perpendicularLength * Math.sin(angle + Math.PI / 2);
+        const perpendicularX2 = lastX - perpendicularLength * Math.cos(angle + Math.PI / 2);
+        const perpendicularY2 = lastY - perpendicularLength * Math.sin(angle + Math.PI / 2);
+
+        // Ensure the perpendicular line stays within canvas boundaries
+        const boundedX1 = Math.max(0, Math.min(ctx.canvas.width, perpendicularX1));
+        const boundedY1 = Math.max(0, Math.min(ctx.canvas.height, perpendicularY1));
+        const boundedX2 = Math.max(0, Math.min(ctx.canvas.width, perpendicularX2));
+        const boundedY2 = Math.max(0, Math.min(ctx.canvas.height, perpendicularY2));
+
+        // Draw the perpendicular line
+        ctx.beginPath();
+        ctx.moveTo(boundedX1, boundedY1);
+        ctx.lineTo(boundedX2, boundedY2);
+        ctx.strokeStyle = 'red';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+    }
+}
+            
 // Event listener for Enter key
 document.getElementById('inputText').addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
@@ -227,21 +307,6 @@ document.getElementById('inputText').addEventListener('keypress', function (e) {
 function isValidCoordinate(coord, canvasWidth, canvasHeight) {
     return coord.x >= 0 && coord.x <= canvasWidth && coord.y >= 0 && coord.y <= canvasHeight;
 }
-
-
-// Event listener for Enter key
-document.getElementById('inputText').addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') {
-        e.preventDefault(); // Prevent default behavior of Enter key (like form submission)
-        generateSigil();
-    }
-});
-
-// Function to validate coordinates
-function isValidCoordinate(coord, canvasWidth, canvasHeight) {
-    return coord.x >= 0 && coord.x <= canvasWidth && coord.y >= 0 && coord.y <= canvasHeight;
-}
-
 
 // Function to get the letter at the hovered coordinates
 function getHoveredLetter(x, y) {
@@ -274,19 +339,24 @@ canvas.addEventListener('mousemove', function(e) {
     }
 });
 
+function downloadSigil() {
+    const mainCanvas = document.getElementById('sigilCanvas');
+    const sigilSymbols = processText(document.getElementById('inputText').value);
 
+    // Create an off-screen canvas
+    const offScreenCanvas = document.createElement('canvas');
+    const ctx = offScreenCanvas.getContext('2d');
 
-// Function to get the letter at the hovered coordinates
-function getHoveredLetter(x, y) {
-    for (let letter in letterMap) {
-        const coords = letterMap[letter];
+    // Match the size of the main canvas
+    offScreenCanvas.width = mainCanvas.width;
+    offScreenCanvas.height = mainCanvas.height;
 
-        // Check if the mouse is within a small threshold of the letter's coordinates
-        if (Math.abs(x - coords.x) < 20 && Math.abs(y - coords.y) < 20) {
-            return letter;
-        }
-    }
-    return ''; // Return empty string if no letter is found
+    // Draw the sigil on the off-screen canvas
+    drawSigil(sigilSymbols, ctx);
+
+    // Download the sigil as a PNG
+    const link = document.createElement('a');
+    link.download = 'sigil_only.png';
+    link.href = offScreenCanvas.toDataURL('image/png');
+    link.click();
 }
-
-

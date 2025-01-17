@@ -9,9 +9,11 @@
 <body>
     <div id="sigilResult">
         <h1>Sigil Generator</h1>
-        <textarea id="inputText" placeholder="Enter your sentence here"></textarea>
+        <textarea id="inputText" placeholder="Enter your sentence here" maxlength="1000"></textarea>
         <button onclick="generateSigil()">Generate Sigil</button>
         <canvas id="sigilCanvas" width="600" height="600"></canvas>
+        <button id="downloadButton" onclick="downloadSigil()">Download Sigil</button>
+
     </div>
     <script src="index.js"></script>
 </body>
