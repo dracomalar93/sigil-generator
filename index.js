@@ -1,11 +1,6 @@
 let img = new Image(); // Declare the image globally so we don't reload it each time
 let letterCoordinates = []; // Store coordinates of detected letters
 let canvasWidth, canvasHeight; // Store canvas dimensions
-let resizeTimeout;
-window.addEventListener('resize', function() {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(resizeCanvas, 200); // Resize after 200ms delay
-});
 
 
 // Manually defined coordinates for letters (example)
@@ -55,12 +50,6 @@ window.onload = function() {
     
     img.onload = function() {
         console.log("Image loaded successfully!");
-        
-        // Resize and redraw the canvas when the image is loaded
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas); // Adjust canvas size on window resize
-        window.onload = resizeCanvas; // Set canvas size on page load
-
 
         // Store canvas dimensions
         canvasWidth = canvas.width;
@@ -300,52 +289,4 @@ function getHoveredLetter(x, y) {
     return ''; // Return empty string if no letter is found
 }
 
-canvas.addEventListener('touchmove', function(e) {
-    const touch = e.touches[0]; // Get the first touch point
-    const canvasRect = canvas.getBoundingClientRect(); // Get canvas position
 
-    const touchX = touch.clientX - canvasRect.left; // X coordinate
-    const touchY = touch.clientY - canvasRect.top; // Y coordinate
-
-    }
-});
-
-// Function to resize the canvas dynamically
-function resizeCanvas() {
-    const canvas = document.getElementById('sigilCanvas');
-    const ctx = canvas.getContext('2d');
-
-    const aspectRatio = img.width / img.height; // Calculate the aspect ratio
-
-    // Calculate the new dimensions for the canvas
-    let canvasWidth = window.innerWidth * 0.9; // Allow some margin
-    let canvasHeight = canvasWidth / aspectRatio;
-
-    // Adjust dimensions if height exceeds the viewport height
-    if (canvasHeight > window.innerHeight * 0.9) {
-        canvasHeight = window.innerHeight * 0.9;
-        canvasWidth = canvasHeight * aspectRatio;
-    }
-
-    // Set the canvas dimensions
-    canvas.width = canvasWidth;
-    canvas.height = canvasHeight;
-
-    // Redraw the image to fit the new canvas size
-    if (img.complete) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height); // Draw the image
-    }
-}
-
-// Load the image and initialize the canvas
-img.onload = function () {
-    console.log("Image loaded successfully!");
-    resizeCanvas(); // Resize the canvas when the image is loaded
-};
-
-img.src = 'Rosy Cross.png'; // Replace with the correct image path
-
-// Attach event listeners for resizing
-window.addEventListener('resize', resizeCanvas);
-window.onload = resizeCanvas;
