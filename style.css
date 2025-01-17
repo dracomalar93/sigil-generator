@@ -11,6 +11,10 @@ body {
     color: white; /* Make text white */
 }
 
+h1 {
+    color: #8B0000;
+}
+
 /* Center elements inside the container */
 #sigilResult {
     display: flex;
@@ -24,7 +28,10 @@ body {
 }
 
 /* Textarea styles */
+/* Textarea styles */
 #inputText {
+    background-color: black; /* Black background */
+    color: red; /* White input text */
     padding: 10px;
     font-size: 16px;
     margin-bottom: 20px;
@@ -32,17 +39,20 @@ body {
     max-width: 400px; /* Set max width */
     height: 60px; /* Fixed height */
     box-sizing: border-box;
-    color: black; /* Text inside the textarea is black for readability */
-    background-color: white; /* Background remains white */
-    border: none; /* Clean border */
-    border-radius: 5px; /* Slight rounding for aesthetics */
+    border: 1px solid #8B0000; /* Optional: Add white border for visibility */
 }
+
+/* Placeholder text style */
+#inputText::placeholder {
+    color: #8B0000; /* Light gray placeholder text */
+}
+
 
 /* Button styles */
 button {
     padding: 10px 20px;
     font-size: 16px;
-    background-color: red;
+    background-color: #8B0000;
     color: white;
     border: none;
     cursor: pointer;
