@@ -359,4 +359,4 @@ function downloadSigil() {
     link.download = 'sigil_only.png';
     link.href = offScreenCanvas.toDataURL('image/png');
     link.click();
-}
+}  
